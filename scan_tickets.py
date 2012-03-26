@@ -1,6 +1,6 @@
 import ticket_security
 
-def scan_tickets(binary = '/tmp/al22g09/bin/zbarcam', signer = None):
+def scan_tickets(binary = 'zbarcam', signer = None):
     import subprocess, sys
     process = subprocess.Popen(binary,
                                bufsize=1,
