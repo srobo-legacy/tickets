@@ -1,6 +1,6 @@
 from ticket_security import TicketSigner
 from PyQRNative import QRCode, QRErrorCorrectLevel
-import argparse, StringIO, base64
+import argparse, StringIO, base64, shutil, os, subprocess
 
 HMAC_SUBST_STR = "$$__HMAC__$$"
 QR_DATA_URI_STR = "$$__QR_DATA_URI_STR__$$"
@@ -87,6 +87,33 @@ class Ticket(object):
 
 def main():
     args = get_args()
+    t = Ticket(args.username, year=args.year,
+               private_key_file=args.private_key_file)
+
+    # create a temporary SVG
+    tmp_fname = os.tmpnam()
+    t.generate_SVG(tmp_fname)
+
+    # perform renames/conversions
+    output_fname = args.output
+    if args.type.lower() == "svg":
+        if output_fname is None:
+            output_fname = "{0}.svg".format(args.username)
+        shutil.move(tmp_fname, output_fname)
+
+    elif args.type.lower() == "pdf":
+        if output_fname is None:
+            output_fname = "{0}.pdf".format(args.username)
+        stdout_stderr = os.tmpfile()
+        if subprocess.check_call(['inkscape', '-A', output_fname, tmp_fname],
+                                 stdout=stdout_stderr, stderr=stdout_stderr) != 0:
+            raise OSError("Unable to convert SVG to PDF")
+        stdout_stderr.close()
+        os.remove(tmp_fname)
+
+    else:
+        raise ValueError("Unexpected type '{0}'".format(args.type))
+
 
 if __name__ == '__main__':
     main()
