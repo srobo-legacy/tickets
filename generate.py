@@ -17,7 +17,7 @@ def get_args():
                         help=("The private key file for use by the "
                               "ticket signer"))
 
-    parser.add_argument('username', nargs='+',
+    parser.add_argument('username',
                         help="The username for the ticket")
 
     return parser.parse_args()
