@@ -5,7 +5,10 @@ def get_args():
     parser = argparse.ArgumentParser(description="Generate a Srobo Ticket")
 
     parser.add_argument('-o', '--output',
-                        help="Output SVG file")
+                        help="Output file name")
+
+    parser.add_argument('-t', '--type', default="pdf",
+                        help="Output file format, one of {pdf, svg}")
 
     parser.add_argument('-y', '--year',
                         help="The competition (academic) year")
