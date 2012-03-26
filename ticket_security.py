@@ -24,7 +24,10 @@ class TicketSigner(object):
         return '{0}:{1}'.format(username, self._hmac(username))
 
     def verify(self, digest):
-        username, hmac = digest.split(':')
+        fragments = digest.split(':')
+        if len(fragments) != 2:
+            raise ValueError("QR code is not valid")
+        username, hmac = fragments
         if hmac != self._hmac(username):
             raise ValueError("HMAC is not valid")
         return username
