@@ -1,5 +1,6 @@
 import ticket_security
 from hashlib import sha256
+from user_database import User
 
 def scan_tickets(binary = 'zbarcam', signer = None):
     import subprocess, sys
@@ -18,11 +19,26 @@ def scan_tickets(binary = 'zbarcam', signer = None):
                 webbrowser.open('http://nyan.cat')
                 continue
             try:
-                yield signer.verify(data)
+                user = signer.verify(data)
+                un = User.get(user)
+                if un is None:
+                    yield False, "user not found in DB"
+                    continue
+                if not un.media_consent:
+                    yield False, "user has not signed media consent"
+                    continue
+                if un.checked_in:
+                    yield False, "user already granted entry"
+                    continue
+                un.checked_in = True
+                yield True, "{0} - {1} ({2})".format(un.organisation, un.fullname, un.username)
             except ValueError:
-                yield None
+                yield False, "ticket is not valid"
 
 if __name__ == '__main__':
-    for ticket in scan_tickets():
-        print ticket
+    for status, ticket in scan_tickets():
+        if status:
+            print ticket
+        else:
+            print "ERROR: ", ticket
 
