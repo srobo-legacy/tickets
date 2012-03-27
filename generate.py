@@ -45,6 +45,13 @@ class Ticket(object):
         self.year = year
         self.comp_date_str = comp_date_str
         self.private_key_file = private_key_file
+        self._get_user_fields()
+
+
+    def _get_user_fields(self):
+        # TODO: look details up here
+        self.name = "Malcolm Reynolds"
+        self.school = "Serenity Valley College"
 
 
     def hmac(self):
