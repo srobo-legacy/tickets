@@ -76,7 +76,7 @@ class Ticket(object):
     def qr_data_uri(self):
         """Generates a QR Code and returns it as a data URI"""
 
-        qr = QRCode(6, QRErrorCorrectLevel.L)
+        qr = QRCode(4, QRErrorCorrectLevel.L)
         qr.addData(self.hmac())
         qr.make()
         im = qr.makeImage()
