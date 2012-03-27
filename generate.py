@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from ticket_security import TicketSigner, current_academic_year
 from PyQRNative import QRCode, QRErrorCorrectLevel
 import argparse, StringIO, base64, shutil, os, subprocess
