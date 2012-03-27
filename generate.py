@@ -106,7 +106,7 @@ class Ticket(object):
 
 def main():
     args = get_args()
-    t = Ticket(args.username, year=args.year,
+    t = Ticket(args.username, args.year, args.comp_date_str,
                private_key_file=args.private_key_file)
 
     # create a temporary SVG
