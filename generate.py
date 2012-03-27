@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from ticket_security import TicketSigner, current_academic_year
+from user_database import User
 from PyQRNative import QRCode, QRErrorCorrectLevel
 import argparse, StringIO, base64, shutil, os, subprocess
 import time
@@ -52,9 +53,13 @@ class Ticket(object):
 
 
     def _get_user_fields(self):
-        # TODO: look details up here
-        self.name = "Malcolm Reynolds"
-        self.school = "Serenity Valley College"
+        user_details = User.get(self.username)
+        if not user_details:
+            raise KeyError("username is unknown")
+        elif not user_details.media_consent:
+            raise ValueError("user has not signed a media consent form")
+        self.name = user_details.fullname
+        self.school = user_details.organisation
 
 
     def hmac(self):
