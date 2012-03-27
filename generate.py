@@ -25,6 +25,9 @@ def get_args():
     parser.add_argument('-y', '--year', default=current_academic_year(),
                         help="The competition (academic) year")
 
+    parser.add_argument('-d', '--comp-date-str', default="",
+                        help="A string representing the date of the competition")
+
     parser.add_argument('-k', '--private-key-file',
                         help=("The private key file for use by the "
                               "ticket signer"))
