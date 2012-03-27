@@ -40,10 +40,11 @@ def get_args():
 
 
 class Ticket(object):
-    def __init__(self, username, year=None, private_key_file=None):
+    def __init__(self, username, year, comp_date_str, private_key_file=None):
         self.username = username
         self.year = year
-        self.private_key_file = None
+        self.comp_date_str = comp_date_str
+        self.private_key_file = private_key_file
 
 
     def hmac(self):
