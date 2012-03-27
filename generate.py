@@ -24,7 +24,7 @@ def get_args():
                         help="Output file name")
 
     parser.add_argument('-t', '--type', default="pdf",
-                        help="Output file format, one of {pdf, svg}")
+                        help="Output file format, one of {pdf, svg, ps}")
 
     parser.add_argument('-y', '--year', default=current_academic_year(),
                         help="The competition (academic) year")
@@ -44,10 +44,12 @@ def get_args():
 
 
 class Ticket(object):
-    def __init__(self, username, year, comp_date_str, private_key_file=None):
+    def __init__(self, username, year, comp_date_str,
+                 template_svg='ticket_template.svg', private_key_file=None):
         self.username = username
         self.year = year
         self.comp_date_str = comp_date_str
+        self.template_svg = template_svg
         self.private_key_file = private_key_file
         self._get_user_fields()
 
@@ -90,11 +92,14 @@ class Ticket(object):
         return format.format(base64.b64encode(qr_string.getvalue()))
 
 
-    def generate_SVG(self, output_file, template='ticket_template.svg'):
+    def generate_SVG(self, output_file, template=None):
         """
         Generates a SVG by performing substitutions on the given `template`,
         writing it to `output`.
         """
+
+        if template is None:
+            template = self.template_svg
 
         # read template SVG
         with open(template, 'r') as f:
@@ -118,36 +123,57 @@ class Ticket(object):
             f.write(template_str)
 
 
+    def _inkscape(self, in_file, out_file, type):
+        """Run inkscape to convert the SVG to something else"""
+
+        format_option = {'pdf': '-A', 'ps': '-P'}[type.lower()]
+        out_err = os.tmpfile()
+        if subprocess.check_call(['inkscape', format_option, out_file, in_file],
+                                 stdout=out_err, stderr=out_err):
+            raise OSError("Unable to convert SVG to {0}".format(type))
+        out_err.close()
+
+
+    def _inkscape_generate(self, fname, type, template=None):
+        tmp_fname = os.tmpnam()
+        self.generate_SVG(tmp_fname, template)
+        self._inkscape(tmp_fname, fname, type)
+        os.remove(tmp_fname)
+
+
+    def generate_PDF(self, fname, template=None):
+        """Generate a PDF and save it as `fname`"""
+        self._inkscape_generate(fname, 'pdf', template)
+
+
+    def generate_PS(self, fname, template=None):
+        """Generate a PS and save it as `fname`"""
+        self._inkscape_generate(fname, 'ps', template)
+
+
+
 
 def main():
     args = get_args()
     t = Ticket(args.username, args.year, args.comp_date_str,
                private_key_file=args.private_key_file)
 
-    # create a temporary SVG
-    tmp_fname = os.tmpnam()
-    t.generate_SVG(tmp_fname)
+    output_type = args.type.lower()
+    if not output_type in ('svg', 'pdf', 'ps'):
+        raise ValueError("Unexpected type '{0}'".format(output_type))
 
-    # perform renames/conversions
     output_fname = args.output
-    if args.type.lower() == "svg":
-        if output_fname is None:
-            output_fname = "{0}.svg".format(args.username)
-        shutil.move(tmp_fname, output_fname)
+    if output_fname is None:
+        output_fname = "{0}.{1}".format(args.username, output_type)
 
-    elif args.type.lower() == "pdf":
-        if output_fname is None:
-            output_fname = "{0}.pdf".format(args.username)
-        stdout_stderr = os.tmpfile()
-        if subprocess.check_call(['inkscape', '-A', output_fname, tmp_fname],
-                                 stdout=stdout_stderr, stderr=stdout_stderr) != 0:
-            raise OSError("Unable to convert SVG to PDF")
-        stdout_stderr.close()
-        os.remove(tmp_fname)
+    if output_type == 'svg':
+        t.generate_SVG(output_fname)
 
-    else:
-        raise ValueError("Unexpected type '{0}'".format(args.type))
+    elif output_type == 'pdf':
+        t.generate_PDF(output_fname)
 
+    elif output_type == 'ps':
+        t.generate_PS(output_fname)
 
 if __name__ == '__main__':
     main()
