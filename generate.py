@@ -1,4 +1,4 @@
-from ticket_security import TicketSigner
+from ticket_security import TicketSigner, current_academic_year
 from PyQRNative import QRCode, QRErrorCorrectLevel
 import argparse, StringIO, base64, shutil, os, subprocess
 
@@ -22,7 +22,7 @@ def get_args():
     parser.add_argument('-t', '--type', default="pdf",
                         help="Output file format, one of {pdf, svg}")
 
-    parser.add_argument('-y', '--year',
+    parser.add_argument('-y', '--year', default=current_academic_year(),
                         help="The competition (academic) year")
 
     parser.add_argument('-k', '--private-key-file',
