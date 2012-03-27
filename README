@@ -10,4 +10,9 @@ To generate a PDF ticket, all one needs to do is:
                   -d "April 14th-15th" <username>
 
 ...where obvious substitutions are made, and assuming 'ticket.key' exists
-in the same directory.
+in the same directory.  If you don't have a 'ticket.key', you can generate
+one as follows:
+
+    openssl rand -out ticket.key 256
+
+The ticket used in production should remain both secret and constant.
