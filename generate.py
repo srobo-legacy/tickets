@@ -1,6 +1,7 @@
 from ticket_security import TicketSigner, current_academic_year
 from PyQRNative import QRCode, QRErrorCorrectLevel
 import argparse, StringIO, base64, shutil, os, subprocess
+import time
 
 HMAC_SUBST_STR  = "$$__HMAC__$$"
 QR_DATA_URI_STR = "$$__QR_DATA_URI_STR__$$"
@@ -93,10 +94,17 @@ class Ticket(object):
             template_str = f.read()
 
         # perform substitutions
-        template_str = template_str.replace(HMAC_SUBST_STR,
-                                            self.hmac())
-        template_str = template_str.replace(QR_DATA_URI_STR,
-                                            self.qr_data_uri())
+        subs = [(HMAC_SUBST_STR,  self.hmac()),
+                (QR_DATA_URI_STR, self.qr_data_uri()),
+                (YEAR_STR,        self.year),
+                (COMP_DATE_STR,   self.comp_date_str),
+                (NAME_STR,        self.name),
+                (SCHOOL_STR,      self.school),
+                (GENERATION_STR,  time.strftime("%Y-%m-%d %H:%M (%Z)")),
+                (VERSION_STR,     VERSION)]
+
+        for replace, replace_with in subs:
+            template_str = template_str.replace(replace, str(replace_with))
 
         # write output SVG
         with open(output_file, 'w') as f:
