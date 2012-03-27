@@ -1,6 +1,14 @@
 Srobo Ticket System
 ===================
 
+Dependencies
+------------
+
+ * zbarcam - A QR Code scanning application
+    - Only required for scanning a ticket
+    - Provided by the Fedora Repos (I've only checked 16) as 'zbar'
+
+
 Ticket Generation
 -----------------
 
