@@ -2,8 +2,16 @@ from ticket_security import TicketSigner
 from PyQRNative import QRCode, QRErrorCorrectLevel
 import argparse, StringIO, base64, shutil, os, subprocess
 
-HMAC_SUBST_STR = "$$__HMAC__$$"
+HMAC_SUBST_STR  = "$$__HMAC__$$"
 QR_DATA_URI_STR = "$$__QR_DATA_URI_STR__$$"
+YEAR_STR        = "$$__YEAR__$$"
+COMP_DATE_STR   = "$$__COMP_DATE__$$"
+NAME_STR        = "$$__NAME__$$"
+SCHOOL_STR      = "$$__SCHOOL__$$"
+GENERATION_STR  = "$$__GENERATION__$$"
+VERSION_STR     = "$$__VERSION__$$"
+
+VERSION = "v1"
 
 def get_args():
     parser = argparse.ArgumentParser(description="Generate a Srobo Ticket")
