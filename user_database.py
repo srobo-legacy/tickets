@@ -43,3 +43,8 @@ class User:
     def __str__(self):
         return "{0} <{1}> ({2})".format(self.fullname, self.username, self.organisation)
 
+if __name__ == "__main__":
+    import sys
+    u = User.get(sys.argv[1])
+    print u
+
