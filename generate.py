@@ -126,9 +126,9 @@ class Ticket(object):
     def _inkscape(self, in_file, out_file, type):
         """Run inkscape to convert the SVG to something else"""
 
-        format_option = {'pdf': '-A', 'ps': '-P'}[type.lower()]
+        format_options = {'pdf': ['-A'], 'ps': ['-T', '-P']}[type.lower()]
         out_err = os.tmpfile()
-        if subprocess.check_call(['inkscape', format_option, out_file, in_file],
+        if subprocess.check_call(['inkscape'] + format_options + [out_file, in_file],
                                  stdout=out_err, stderr=out_err):
             raise OSError("Unable to convert SVG to {0}".format(type))
         out_err.close()
