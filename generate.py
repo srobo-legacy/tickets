@@ -69,7 +69,7 @@ class Ticket(object):
 
         private_key = None
         if self.private_key_file is not None:
-            with open(private_key_file) as f:
+            with open(self.private_key_file) as f:
                 private_key = f.read()
         ts = TicketSigner(private_key=private_key, year=self.year)
         return ts.sign(self.username)
