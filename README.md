@@ -8,6 +8,11 @@ Dependencies
     - Only required for scanning a ticket
     - Provided by the Fedora Repos (I've only checked 16) as 'zbar'
 
+ * various postscript utils (psmerge, psnup, ps2pdf) (for 3UP generation only)
+    - On Fedora 16, the packages needed (as far as I can tell) are:
+       - psutils
+       - psutils-perl
+       - ghostscript
 
 Ticket Generation
 -----------------
