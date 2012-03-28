@@ -12,6 +12,7 @@ YEAR_STR        = "$$__YEAR__$$"
 COMP_DATE_STR   = "$$__COMP_DATE__$$"
 NAME_STR        = "$$__NAME__$$"
 SCHOOL_STR      = "$$__SCHOOL__$$"
+LINK_STR        = "$$__LINK__$$"
 GENERATION_STR  = "$$__GENERATION__$$"
 VERSION_STR     = "$$__VERSION__$$"
 
@@ -32,6 +33,9 @@ def get_args():
     parser.add_argument('-d', '--comp-date-str', default="",
                         help="A string representing the date of the competition")
 
+    parser.add_argument('-l', '--link', default="",
+                        help="A link to appear on the ticket")
+
     parser.add_argument('-k', '--private-key-file',
                         help=("The private key file for use by the "
                               "ticket signer"))
@@ -44,11 +48,12 @@ def get_args():
 
 
 class Ticket(object):
-    def __init__(self, username, year, comp_date_str,
+    def __init__(self, username, year, comp_date_str, link,
                  template_svg='ticket_template.svg', private_key_file=None):
         self.username = username
         self.year = year
         self.comp_date_str = comp_date_str
+        self.link = link
         self.template_svg = template_svg
         self.private_key_file = private_key_file
         self._get_user_fields()
@@ -112,6 +117,7 @@ class Ticket(object):
                 (COMP_DATE_STR,   self.comp_date_str),
                 (NAME_STR,        self.name),
                 (SCHOOL_STR,      self.school),
+                (LINK_STR,        self.link),
                 (GENERATION_STR,  time.strftime("%Y-%m-%d %H:%M (%Z)")),
                 (VERSION_STR,     VERSION)]
 
@@ -156,7 +162,7 @@ class Ticket(object):
 def main():
     args = get_args()
     t = Ticket(args.username, args.year, args.comp_date_str,
-               private_key_file=args.private_key_file)
+               args.link, private_key_file=args.private_key_file)
 
     output_type = args.type.lower()
     if not output_type in ('svg', 'pdf', 'ps'):
