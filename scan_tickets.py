@@ -30,7 +30,7 @@ def scan_tickets(binary = 'zbarcam', signer = None):
                 if un.checked_in:
                     yield False, "user already granted entry"
                     continue
-                un.checked_in = True
+                un.mark_checked_in()
                 yield True, "{0} - {1} ({2})".format(un.organisation, un.fullname, un.username)
             except ValueError:
                 yield False, "ticket is not valid"

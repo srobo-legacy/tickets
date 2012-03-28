@@ -40,6 +40,16 @@ class User:
         self.checked_in = False
         self.media_consent = False
 
+    def mark_checked_in(self):
+        self.checked_in = True
+        import urllib2
+        request = urllib2.Request(_BASE_URI,
+                                  self._encode_query({'username': self.username,
+                                                      'scanned': True}),
+                                  {'Content-type': 'application/octet-stream'})
+        f = urllib2.urlopen(request)
+        f.close()
+
     def __str__(self):
         return "{0} <{1}> ({2})".format(self.fullname, self.username, self.organisation)
 
