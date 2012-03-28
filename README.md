@@ -20,7 +20,7 @@ Ticket Generation
 To generate a PDF ticket, all one needs to do is:
 
     ./generate.py -o <path/to/output/file.pdf> -y 2012 \
-                  -d "April 14th-15th" <username>
+                  -d "April 14th-15th" -l "http://..." <username>
 
 ...where obvious substitutions are made, and assuming 'ticket.key' exists
 in the same directory.  If you don't have a 'ticket.key', you can generate
