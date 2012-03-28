@@ -4,7 +4,7 @@ from ticket_security import TicketSigner, current_academic_year
 from user_database import User
 from PyQRNative import QRCode, QRErrorCorrectLevel
 import argparse, StringIO, base64, shutil, os, subprocess
-import time
+import time, tempfile
 
 HMAC_SUBST_STR  = "$$__HMAC__$$"
 QR_DATA_URI_STR = "$$__QR_DATA_URI_STR__$$"
@@ -141,9 +141,10 @@ class Ticket(object):
 
 
     def _inkscape_generate(self, fname, type, template=None):
-        tmp_fname = os.tmpnam()
+        tmp_fd, tmp_fname = tempfile.mkstemp()
         self.generate_SVG(tmp_fname, template)
         self._inkscape(tmp_fname, fname, type)
+        os.close(tmp_fd)
         os.remove(tmp_fname)
 
 
