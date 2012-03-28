@@ -43,7 +43,7 @@ def ps2pdf(input_fname, output_fname):
 
 
 def generate_and_merge_ps(output_fname, usernames, year, comp_date_str,
-                          private_key_file=None):
+                          link, private_key_file=None):
     """
     Given a list of usernames, and the standard ticket generation arguments,
     create a postscript ticket for each username and merge them all into a
@@ -55,7 +55,7 @@ def generate_and_merge_ps(output_fname, usernames, year, comp_date_str,
     os.mkdir(tmp_dir)
 
     for username in usernames:
-        t = Ticket(username, year, comp_date_str,
+        t = Ticket(username, year, comp_date_str, link,
                    private_key_file=private_key_file)
 
         path = os.path.join(tmp_dir, "{0}.ps".format(username))
@@ -76,6 +76,8 @@ def main():
                         help="The academic year of the competition")
     parser.add_argument('-d', '--comp-date-str', default="",
                         help="A string representing the date of the competition")
+    parser.add_argument('-l', '--link', default="",
+                        help="A link to appear on the ticket")
     parser.add_argument('-k', '--private-key-file',
                         help=("The private key file for use by the "
                               "ticket signer"))
@@ -89,7 +91,7 @@ def main():
     # create 3up ticket sheets
     merged_ps_file = os.tmpnam()
     generate_and_merge_ps(merged_ps_file, args.usernames, args.year,
-                          args.comp_date_str,
+                          args.comp_date_str, args.link,
                           private_key_file=args.private_key_file)
 
     ps2pdf(merged_ps_file, args.output)
