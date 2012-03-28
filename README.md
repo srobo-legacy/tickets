@@ -14,6 +14,7 @@ Dependencies
        - psutils-perl
        - ghostscript
 
+
 Ticket Generation
 -----------------
 
@@ -29,3 +30,17 @@ one as follows:
     openssl rand -out ticket.key 256
 
 The ticket used in production should remain both secret and constant.
+
+
+3-UP Ticket Generation
+----------------------
+
+Should one need to generate tickets for multiple users in one go (for
+teachers, for example), the generate3up.py script can be used:
+
+    ./generate3up.py -y 2012 -d "April 14th-15th" -l "http://..." \
+                      <path/to/output.pdf> <user1> [<user2>...]
+
+This will generate the output PDF with up to 3 tickets per page, one
+ticket per user specified.  Just like generate.py, the same key requirements
+apply here too.
