@@ -29,14 +29,14 @@ if (!$matched) {
 }
 $data = substr($data, strlen($key));
 
-$arguments = json_decode($data);
+$arguments = json_decode($data, true);
 
 $username = $arguments['username'];
 $query = str_replace('?', $username, $config['ldap_query']);
 
 if (!empty($arguments['scanned'])) {
     date_default_timezone_set('UTC');
-    file_put_contents("$user_dir/$username", date('r'));
+    file_put_contents("$userdir/$username", date('r'));
     $output = 'cannot scan in yet';
 } else {
     $results_id = ldap_search($ldap_connection, $query, 'uid=*');
@@ -44,12 +44,32 @@ if (!empty($arguments['scanned'])) {
     $output = array();
     if (count($results) > 0) {
         $username = $results[0]['uid'][0];
-        $outputs['username'] = $username;
-        $outputs['fullname'] = $results[0]['cn'][0] . ' ' . $results[0]['sn'][0];
+        $output['username'] = $username;
+        $output['fullname'] = $results[0]['cn'][0] . ' ' . $results[0]['sn'][0];
+        $groups_id = ldap_search($ldap_connection, 'ou=groups,o=sr', "memberUid=$username");
+        $groups_res = ldap_get_entries($ldap_connection, $groups_id);
+        $org = 'Guest';
+        $media = false;
+        for ($i = 0; $i < $groups_res['count']; ++$i) {
+            $group = $groups_res[$i];
+            $name = $group['cn'][0];
+            if ($name == 'mentors') {
+                $org = 'Staff';
+                $media = true;
+                break;
+            } else if ($name == 'media-consent-2012') {
+                $media = true;
+            } else if (preg_match('/team\\d+/', $name)) {
+                $number = (int)substr($name, 4);
+                $org = $config['teams'][$number];
+            }
+        }
+        $output['organisation'] = $org;
+        $output['media_consent'] = $media;
     } else {
-        $outputs['fullname'] = $username;
+        $output['fullname'] = $username;
     }
-    $outputs['checked_in'] = file_exists("$user_dir/$username");
+    $output['checked_in'] = file_exists("$userdir/$username");
 }
 
 $output = json_encode($output, JSON_FORCE_OBJECT);
