@@ -2,7 +2,7 @@ import collections, json
 
 with open('ticket.key', 'r') as f:
     _key = f.read()
-_BASE_URI = "https://www.studentrobotics.org/tickets/tickets/webapi/horrendous.php"
+_BASE_URI = "https://www.studentrobotics.org/ticket-api/horrendous.php"
 
 class User:
     _shared_users = {}
