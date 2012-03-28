@@ -2,7 +2,7 @@
 
 from generate import Ticket
 from ticket_security import current_academic_year
-import argparse
+import argparse, tempfile
 import sys, os, subprocess, shutil
 
 def merge_ps_files(output_fname, input_fnames):
@@ -51,8 +51,7 @@ def generate_and_merge_ps(output_fname, usernames, year, comp_date_str,
     """
 
     files = []
-    tmp_dir = os.tmpnam()
-    os.mkdir(tmp_dir)
+    tmp_dir = tempfile.mkdtemp()
 
     for username in usernames:
         t = Ticket(username, year, comp_date_str, link,
@@ -73,10 +72,11 @@ def pdf_for_users(output_fname, usernames, year, comp_date_str,
     the standard ticket generation args.
     """
 
-    merged_ps_file = os.tmpnam()
+    merged_fd, merged_ps_file = tempfile.mkstemp()
     generate_and_merge_ps(merged_ps_file, usernames, year, comp_date_str,
                           link, private_key_file)
     ps2pdf(merged_ps_file, output_fname)
+    os.close(merged_fd)
     os.remove(merged_ps_file)
 
 
