@@ -66,6 +66,19 @@ def generate_and_merge_ps(output_fname, usernames, year, comp_date_str,
     shutil.rmtree(tmp_dir)
 
 
+def pdf_for_users(output_fname, usernames, year, comp_date_str,
+                  link, private_key_file=None):
+    """
+    Generates a PDF with tickets for all users in `usernames`, given
+    the standard ticket generation args.
+    """
+
+    merged_ps_file = os.tmpnam()
+    generate_and_merge_ps(merged_ps_file, usernames, year, comp_date_str,
+                          link, private_key_file)
+    ps2pdf(merged_ps_file, output_fname)
+    os.remove(merged_ps_file)
+
 
 def main():
 
@@ -89,13 +102,8 @@ def main():
     args = parser.parse_args()
 
     # create 3up ticket sheets
-    merged_ps_file = os.tmpnam()
-    generate_and_merge_ps(merged_ps_file, args.usernames, args.year,
-                          args.comp_date_str, args.link,
-                          private_key_file=args.private_key_file)
-
-    ps2pdf(merged_ps_file, args.output)
-    os.remove(merged_ps_file)
+    pdf_for_users(args.output, args.usernames, args.year, args.comp_date_str,
+                  args.link, private_key_file=args.private_key_file)
 
 
 if __name__ == '__main__':
