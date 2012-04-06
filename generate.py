@@ -122,11 +122,12 @@ class Ticket(object):
                 (VERSION_STR,     VERSION)]
 
         for replace, replace_with in subs:
-            template_str = template_str.replace(replace, str(replace_with))
+            template_str = template_str.replace(replace, unicode(replace_with))
 
         # write output SVG
         with open(output_file, 'w') as f:
-            f.write(template_str)
+            encoded = template_str.encode('UTF-8')
+            f.write(encoded)
 
 
     def _inkscape(self, in_file, out_file, type):
