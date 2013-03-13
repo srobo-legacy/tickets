@@ -21,6 +21,7 @@ $ldap_connection = ldap_connect($config['ldap_host'],
                                 isset($config['ldap_port']) ?
                                     $config['ldap_port'] :
                                     389);
+ldap_set_option($ldap_connection, LDAP_OPT_PROTOCOL_VERSION, 3);
 ldap_bind($ldap_connection, $config['ldap_rdn'], $config['ldap_pw']);
 
 $matched = substr($data, 0, strlen($key)) == $key;
