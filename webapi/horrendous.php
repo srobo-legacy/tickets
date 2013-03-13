@@ -8,6 +8,17 @@ function deny($message) {
     exit();
 }
 
+function college_name_from_group($ldap_connection, $group) {
+    $search_res = ldap_search($ldap_connection, 'ou=groups,o=sr',
+			      'cn=' . $group);
+    $search_entry = ldap_first_entry($ldap_connection, $search_res);
+    if (!$search_entry){
+        return null;
+    }
+    $values = ldap_get_values($ldap_connection, $search_entry, "description");
+    return isset($values[0]) ? $values[0] : null;
+}
+
 $config = parse_ini_file('config.ini');
 
 $data = $HTTP_RAW_POST_DATA;
@@ -60,9 +71,12 @@ if (!empty($arguments['scanned'])) {
                 break;
             } else if ($name == 'media-consent') {
                 $media = true;
-            } else if (preg_match('/team\\d+/', $name)) {
-                $number = (int)substr($name, 4);
-                $org = $config['teams'][$number];
+            } else if (preg_match('/college-\\d+/', $name)) {
+                $number = (int)substr($name, 8);
+		$col_name = college_name_from_group($ldap_connection, $name);
+		if ($col_name != null){
+		    $org = $col_name;
+		}
             }
         }
         $output['organisation'] = $org;
