@@ -58,7 +58,7 @@ if (!empty($arguments['scanned'])) {
                 $org = 'Staff';
                 $media = true;
                 break;
-            } else if ($name == 'media-consent-2012') {
+            } else if ($name == 'media-consent') {
                 $media = true;
             } else if (preg_match('/team\\d+/', $name)) {
                 $number = (int)substr($name, 4);
