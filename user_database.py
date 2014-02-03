@@ -1,4 +1,4 @@
-import collections, json
+import collections, json, sr
 
 with open('ticket.key', 'r') as f:
     _key = f.read()
@@ -13,21 +13,15 @@ class User:
     @classmethod
     def get(self, username):
         user = self(username)
-        import urllib2
-        request = urllib2.Request(_BASE_URI,
-                                  self._encode_query({'username': username}),
-                                  {'Content-type': 'application/octet-stream'})
-        f = urllib2.urlopen(request)
-        raw_data = f.read()
-        print raw_data
-        data = json.loads(raw_data)
-        f.close()
-        del raw_data, f
-        user.username = data['username'] if 'username' in data else username
-        user.fullname = data['fullname'] if 'fullname' in data else user.username
-        user.organisation = data['organisation'] if 'organisation' in data else 'Guest'
-        user.checked_in = data['checked_in'] if 'checked_in' in data else False
-        user.media_consent = data['media_consent'] if 'media_consent' in data else False
+        sruser = sr.users.user(username)
+        if not sruser.in_db:
+            raise Exception("Nonexistant user \"{0}\"".format(username))
+
+        user.username = sruser.username
+        user.fullname = sruser.cname + " " + sruser.sname
+        user.organisation = "lolwatcollegename"
+        user.checked_in = False # XXX Break for now
+        user.media_consent = False # Also break
         return user
 
     def __init__(self, username):
