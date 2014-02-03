@@ -21,7 +21,7 @@ class User:
         user.fullname = sruser.cname + " " + sruser.sname
         user.organisation = "lolwatcollegename"
         user.checked_in = False # XXX Break for now
-        user.media_consent = False # Also break
+        user.media_consent = 'media-consent' in sruser.groups()
         return user
 
     def __init__(self, username):
