@@ -19,9 +19,20 @@ class User:
 
         user.username = sruser.username
         user.fullname = sruser.cname + " " + sruser.sname
-        user.organisation = "lolwatcollegename"
         user.checked_in = False # XXX Break for now
         user.media_consent = 'media-consent' in sruser.groups()
+
+        for gname in sruser.groups():
+            if "college-" in gname:
+                srgroup = sr.group(gname)
+                if not srgroup.in_db:
+                    raise Exception("User has deleted group attr \"{0}\"".format(gname))
+
+                user.organisation = srgroup.desc
+                break
+        else:
+            raise Exception("User is not in a college")
+
         return user
 
     def __init__(self, username):
