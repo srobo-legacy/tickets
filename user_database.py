@@ -4,12 +4,10 @@ with open('ticket.key', 'r') as f:
     _key = f.read()
 _BASE_URI = "https://localhost/ticket-api/horrendous.php"
 
-class User:
-
-    @classmethod
-    def _encode_query(self, query):
+def _encode_query(query):
         return _key + json.dumps(query)
 
+class User:
     @classmethod
     def get(self, username):
         user = self(username)
@@ -42,11 +40,29 @@ class User:
         self.checked_in = False
         self.media_consent = False
 
-    def mark_checked_in(self):
-        self.checked_in = True
+    @staticmethod
+    def is_checked_in(username):
         import urllib2
         request = urllib2.Request(_BASE_URI,
-                                  self._encode_query({'username': self.username,
+                                  _encode_query({'username': username,
+                                  'Content-type': 'application/octet-stream'}))
+        f = urllib2.urlopen(request)
+
+        raw_data = f.read()
+        data = json.loads(raw_data)
+        f.close()
+        del raw_data, f
+        if not 'checked_in' in data:
+            raise Exception("No checked_in response from server")
+
+        print repr(data['checked_in'])
+        return data['checked_in']
+
+    @staticmethod
+    def mark_checked_in(username):
+        import urllib2
+        request = urllib2.Request(_BASE_URI,
+                                  _encode_query({'username': username,
                                                       'scanned': True}),
                                   {'Content-type': 'application/octet-stream'})
         f = urllib2.urlopen(request)

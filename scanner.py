@@ -22,23 +22,13 @@ class TicketScanner(object):
     def _check_user(self, username, id_confirm):
         """Checks user details, moving into the wristbanding state on success"""
         try:
-            user = User.get(username)
-            self.current_username = username
-            self.current_user = user
+            # A base assumption of this system is that the ticket signer is
+            # trustworthy. Thus, the user validity isn't checked, only that
+            # they're not checked in already.
 
-            if user is None:
-                self._error_state("User '{}' not found".format(username))
-
-            elif not user.media_consent:
-                self._error_state("User '{}' ({}) has no media consent "
-                                  "{}".format(user.fullname,
-                                              username,
-                                              "or doesn't exist" if user.fullname == username else ""))
-
-            elif user.checked_in:
-                self._error_state("User '{}' ({}) already checked-in".format(user.fullname,
-                                                                             username))
-
+            is_checked_in = User.is_checked_in(username)
+            if is_checked_in:
+                self._error_state("User '{}' already checked-in".format(username))
             else:
                 if id_confirm:
                     self._set_message("Waiting for identity confirmation...", GOOD)
@@ -47,7 +37,7 @@ class TicketScanner(object):
                         self._ready_state()
                         return
 
-                self._wristband_state("\nUser '{}' ({}) can be wristbanded".format(user.fullname,
+            self._wristband_state("\nUser '{}' ({}) can be wristbanded".format(user.fullname,
                                                                                  username))
 
         except ValueError as e:
@@ -68,16 +58,16 @@ class TicketScanner(object):
         try:
             username = signer.verify(data)
             self._check_user(username, False)
+            self.current_username = username
 
         except ValueError as e:
             self._error_state(str(e))
 
 
     def _wristband_click(self, widget, data=None):
-        self.current_user.mark_checked_in()
-        self._log(self.current_user, "has been wristbanded")
+        User.mark_checked_in(self.current_username)
+        self._log(self.current_username, "has been wristbanded")
         self._ready_state()
-
 
     def _abort_click(self, widget, data=None):
         self._ready_state()
@@ -106,9 +96,9 @@ class TicketScanner(object):
                             (gtk.STOCK_NO, gtk.RESPONSE_REJECT,
                              gtk.STOCK_YES, gtk.RESPONSE_ACCEPT))
         label = gtk.Label("Has the user's identity been confirmed? (photo ID? teacher?)"
-                          "\n\n{} ({})\nfrom {}".format(self.current_user.fullname,
+                          "\n\n{} ({})\nfrom {}".format("XXXFULLNAME",
                                                         self.current_username,
-                                                        self.current_user.organisation))
+                                                        "XXXSCHOOL"))
         dialog.set_border_width(15)
         dialog.vbox.pack_start(label)
         dialog.show_all()
@@ -161,7 +151,6 @@ class TicketScanner(object):
         self._set_message("Ready.", NEITHER)
         self._buttons(False, False, True)
         self.current_username = None
-        self.current_user = None
 
 
     def _construct_page(self):
