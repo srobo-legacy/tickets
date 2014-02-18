@@ -5,6 +5,7 @@ from user_database import User
 from PyQRNative import QRCode, QRErrorCorrectLevel
 import argparse, StringIO, base64, shutil, os, subprocess
 import time, tempfile
+from config import *
 
 HMAC_SUBST_STR  = "$$__HMAC__$$"
 QR_DATA_URI_STR = "$$__QR_DATA_URI_STR__$$"
