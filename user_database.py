@@ -18,7 +18,6 @@ class User:
         user.username = sruser.username
         user.fullname = sruser.cname + " " + sruser.sname
         user.checked_in = False # XXX Break for now
-        user.media_consent = 'media-consent' in sruser.groups()
 
         for gname in sruser.groups():
             if "college-" in gname:
@@ -38,7 +37,6 @@ class User:
         self.fullname = '{0} {1}'.format(username[0].upper(), username[1:].capitalize())
         self.organisation = 'Unknown'
         self.checked_in = False
-        self.media_consent = False
 
     @staticmethod
     def is_checked_in(username):

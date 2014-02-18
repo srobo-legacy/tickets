@@ -63,8 +63,6 @@ class Ticket(object):
         user_details = User.get(self.username)
         if not user_details:
             raise KeyError("username is unknown")
-        elif not user_details.media_consent:
-            raise ValueError("user has not signed a media consent form")
         self.name = user_details.fullname
         self.school = user_details.organisation
 
