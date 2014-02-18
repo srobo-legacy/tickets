@@ -17,8 +17,6 @@ LINK_STR        = "$$__LINK__$$"
 GENERATION_STR  = "$$__GENERATION__$$"
 VERSION_STR     = "$$__VERSION__$$"
 
-VERSION = "v1"
-
 def get_args():
     parser = argparse.ArgumentParser(description="Generate a Srobo Ticket")
 
@@ -121,7 +119,7 @@ class Ticket(object):
                 (SCHOOL_STR,      self.school),
                 (LINK_STR,        self.link),
                 (GENERATION_STR,  time.strftime("%Y-%m-%d %H:%M (%Z)")),
-                (VERSION_STR,     VERSION)]
+                (VERSION_STR,     config.get('tickets', 'version'))]
 
         for replace, replace_with in subs:
             template_str = template_str.replace(replace, unicode(replace_with))
