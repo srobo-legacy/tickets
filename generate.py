@@ -50,7 +50,8 @@ def get_args():
 
 class Ticket(object):
     def __init__(self, username, year, comp_date_str, link,
-                 template_svg='ticket_template.svg', private_key_file=None):
+                 template_svg=config.get('tickets', 'template'),
+                 private_key_file=None):
         self.username = username
         self.year = year
         self.comp_date_str = comp_date_str
