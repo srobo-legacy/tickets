@@ -12,6 +12,9 @@ QR_DATA_URI_STR = "$$__QR_DATA_URI_STR__$$"
 YEAR_STR        = "$$__YEAR__$$"
 COMP_DATE_STR   = "$$__COMP_DATE__$$"
 NAME_STR        = "$$__NAME__$$"
+FIRSTNAME_STR   = "$$__FIRSTNAME__$$"
+LASTNAME_STR    = "$$__LASTNAME__$$"
+USERNAME_STR    = "$$__USERNAME__$$"
 SCHOOL_STR      = "$$__SCHOOL__$$"
 LINK_STR        = "$$__LINK__$$"
 GENERATION_STR  = "$$__GENERATION__$$"
@@ -64,6 +67,9 @@ class Ticket(object):
         if not user_details:
             raise KeyError("username is unknown")
         self.name = user_details.fullname
+        self.cname = user_details.cname
+        self.sname = user_details.sname
+        self.username = user_details.username
         self.school = user_details.organisation
 
 
@@ -114,6 +120,9 @@ class Ticket(object):
                 (YEAR_STR,        self.year),
                 (COMP_DATE_STR,   self.comp_date_str),
                 (NAME_STR,        self.name),
+                (FIRSTNAME_STR,   self.cname),
+                (LASTNAME_STR,    self.sname),
+                (USERNAME_STR,    self.username),
                 (SCHOOL_STR,      self.school),
                 (LINK_STR,        self.link),
                 (GENERATION_STR,  time.strftime("%Y-%m-%d %H:%M (%Z)")),

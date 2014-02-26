@@ -17,6 +17,8 @@ class User:
 
         user.username = sruser.username
         user.fullname = sruser.cname + " " + sruser.sname
+        user.cname = sruser.cname
+        user.sname = sruser.sname
         user.checked_in = False # XXX Break for now
 
         for gname in sruser.groups():
