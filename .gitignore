@@ -1,3 +1,4 @@
 *.pyc
 ticket.key
 *.pdf
+/local.ini
