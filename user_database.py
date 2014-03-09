@@ -21,7 +21,10 @@ class User:
         user.sname = sruser.sname
         user.checked_in = False # XXX Break for now
 
-        for gname in sruser.groups():
+        groups = sruser.groups()
+        user.withdrawn = 'withdrawn' in groups
+
+        for gname in groups:
             if "college-" in gname:
                 srgroup = sr.group(gname)
                 if not srgroup.in_db:

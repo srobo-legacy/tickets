@@ -4,6 +4,7 @@ from ticket_security import TicketSigner, current_academic_year
 from user_database import User
 from PyQRNative import QRCode, QRErrorCorrectLevel
 import argparse, StringIO, base64, shutil, os, subprocess
+import sys
 import time, tempfile
 from config import *
 
@@ -47,23 +48,28 @@ def get_args():
 
     return parser.parse_args()
 
-
+def get_user(username):
+    user_details = User.get(username)
+    if not user_details:
+        raise KeyError("username is unknown")
+    if user_details.withdrawn:
+        print >>sys.stderr, "User {} cannot be issued a ticket because they have been withdrawn".format(username)
+        exit(3)
+    return user_details
 
 class Ticket(object):
-    def __init__(self, username, year, comp_date_str, link,
+    def __init__(self, user, year, comp_date_str, link,
                  template_svg=config.get('tickets', 'template'),
                  private_key_file=None):
-        self.username = username
         self.year = year
         self.comp_date_str = comp_date_str
         self.link = link
         self.template_svg = template_svg
         self.private_key_file = private_key_file
-        self._get_user_fields()
+        self._set_user_fields(user)
 
 
-    def _get_user_fields(self):
-        user_details = User.get(self.username)
+    def _set_user_fields(self, user_details):
         if not user_details:
             raise KeyError("username is unknown")
         self.name = user_details.fullname
@@ -170,7 +176,8 @@ class Ticket(object):
 
 def main():
     args = get_args()
-    t = Ticket(args.username, args.year, args.comp_date_str,
+    user = get_user(args.username)
+    t = Ticket(user, args.year, args.comp_date_str,
                args.link, private_key_file=args.private_key_file)
 
     output_type = args.type.lower()
