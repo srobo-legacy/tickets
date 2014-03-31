@@ -71,7 +71,7 @@ if (!empty($arguments['scanned'])) {
                 break;
             } else if ($name == 'media-consent') {
                 $media = true;
-            } else if (preg_match('/college-\\d+/', $name)) {
+            } else if (preg_match('/college-[a-zA-Z0-9]+/', $name)) {
                 $number = (int)substr($name, 8);
 		$col_name = college_name_from_group($ldap_connection, $name);
 		if ($col_name != null){
