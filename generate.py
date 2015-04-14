@@ -122,7 +122,7 @@ class Ticket(object):
                 (VERSION_STR,     VERSION)]
 
         for replace, replace_with in subs:
-            template_str = template_str.replace(replace, unicode(replace_with))
+            template_str = template_str.replace(replace, str(replace_with).decode('UTF8'))
 
         # write output SVG
         with open(output_file, 'w') as f:
