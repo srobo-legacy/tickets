@@ -58,7 +58,7 @@ if (!empty($arguments['scanned'])) {
         $username = $results[0]['uid'][0];
         $output['username'] = $username;
         $output['fullname'] = $results[0]['cn'][0] . ' ' . $results[0]['sn'][0];
-        $groups_id = ldap_search($ldap_connection, 'ou=groups,o=sr', "memberUid=$username");
+        $groups_id = ldap_search($ldap_connection, 'ou=groups,o=sr', "memberUid=$username", [], 0, 1000);
         $groups_res = ldap_get_entries($ldap_connection, $groups_id);
         $org = 'Guest';
         $media = false;
