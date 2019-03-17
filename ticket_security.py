@@ -30,4 +30,3 @@ class TicketSigner(object):
         if hmac != self._hmac(username):
             raise ValueError("HMAC is not valid")
         return username
-

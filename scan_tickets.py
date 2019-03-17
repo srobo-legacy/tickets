@@ -41,4 +41,3 @@ if __name__ == '__main__':
             print ticket
         else:
             print "ERROR: ", ticket
-

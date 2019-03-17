@@ -93,4 +93,3 @@ header('Content-type: application/json');
 header('Content-length: ' . strlen($output));
 
 echo $output;
-
