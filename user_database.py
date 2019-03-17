@@ -2,6 +2,7 @@ import collections, json
 
 with open('ticket.key', 'r') as f:
     _key = f.read()
+
 _BASE_URI = "https://studentrobotics.org/ticket-api/horrendous.php"
 
 class User:
@@ -53,4 +54,3 @@ if __name__ == "__main__":
     import sys
     u = User.get(sys.argv[1])
     print u
-
