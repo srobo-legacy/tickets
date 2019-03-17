@@ -10,7 +10,7 @@ function deny($message) {
 
 function college_name_from_group($ldap_connection, $group) {
     $search_res = ldap_search($ldap_connection, 'ou=groups,o=sr',
-			      'cn=' . $group);
+                              'cn=' . $group);
     $search_entry = ldap_first_entry($ldap_connection, $search_res);
     if (!$search_entry){
         return null;
@@ -73,10 +73,10 @@ if (!empty($arguments['scanned'])) {
                 $media = true;
             } else if (preg_match('/college-[a-zA-Z0-9]+/', $name)) {
                 $number = (int)substr($name, 8);
-		$col_name = college_name_from_group($ldap_connection, $name);
-		if ($col_name != null){
-		    $org = $col_name;
-		}
+                $col_name = college_name_from_group($ldap_connection, $name);
+                if ($col_name != null){
+                    $org = $col_name;
+                }
             }
         }
         $output['organisation'] = $org;
