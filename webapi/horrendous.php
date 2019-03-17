@@ -3,7 +3,7 @@
 function deny($message) {
     header("HTTP/1.1 418 $message");
     header('Content-type: text/plain');
-    header('Content-length: ' . (strlen($message)) + 1);
+    header('Content-length: ' . (strlen($message) + 1));
     echo "$message\n";
     exit();
 }
