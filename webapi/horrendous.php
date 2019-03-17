@@ -21,7 +21,7 @@ function college_name_from_group($ldap_connection, $group) {
 
 $config = parse_ini_file('config.ini');
 
-$data = $HTTP_RAW_POST_DATA;
+$data = file_get_contents('php://input');
 if (!$data) {
     deny('No data.');
 }
